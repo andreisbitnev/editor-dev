@@ -1,0 +1,4 @@
+AuthUserFile /var/www/staging.algiz.co.uk/basedev/www/.htpasswd
+AuthName "Please Log In"
+AuthType Basic
+require valid-user
