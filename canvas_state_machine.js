@@ -131,17 +131,17 @@ function CanvasStateMachine(canvas, tub){
     		// Remove any existing listeners first
 	    	current_state.canvas.removeEventListener("keydown", keydown_handler);
 	    	document.getElementById(current_state.canvas.id).removeAttribute("tabindex");
-	    	
-	    	document.getElementById('type_tool_cursor').remove();      
-	    	clearInterval(current_state.cursor_interval_pointer);  
-	    	current_state.cursor_interval_pointer = null;    
-	    	
-	    	current_state.cursor = null;	
+
+	    	document.getElementById('type_tool_cursor').remove();
+	    	clearInterval(current_state.cursor_interval_pointer);
+	    	current_state.cursor_interval_pointer = null;
+
+	    	current_state.cursor = null;
 	    }
 
 
-	    
-	    
+
+
         var mouse, mouse_x, mouse_y, shapes, l, i, mySel;
 
         if (current_state.expect_resize !== -1) {
@@ -159,16 +159,16 @@ function CanvasStateMachine(canvas, tub){
 		// Use shapes own detection and pass it mouse X and Y
 		console.log('CSM mousedown selection_mode = '+current_state.selection_mode);
         for (i = l-1; i >= 0; i -= 1){
-        	
+
         	// Clear any existing selection
         	shapes[i].lines_selected = [];
-        	
+
         }
-        
-        for (i = l-1; i >= 0; i -= 1){	
+
+        for (i = l-1; i >= 0; i -= 1){
         	// THIS IS WRONG.....REFACTOR LATER...
         	if(current_state.selection_mode == 'normal_selection'){
-	        	
+
 	            if (shapes[i].contains(mouse_x, mouse_y)) {
 	                mySel = shapes[i];
 	                // Keep track of where in the object we clicked
@@ -181,16 +181,16 @@ function CanvasStateMachine(canvas, tub){
 	                return;
 	            }
            	}
-            
-            
+
+
         	if(current_state.selection_mode == 'alt_selection'){
 	        	// THIS IS WRONG.....
-	        	
+
 	        	console.log('SHAPE IS...');
 	        	console.log(shapes[i]);
 	        	console.log('----------');
-	        	
-	        	
+
+
 	            if (shapes[i].alt_contains(current_state.ctx, mouse_x, mouse_y)) {
 	                mySel = shapes[i];
 	                // Keep track of where in the object we clicked
@@ -203,46 +203,46 @@ function CanvasStateMachine(canvas, tub){
 	                return;
 	            }
            	}
-            
-            
-            
+
+
+
         	// if(shapes[i].page_item_type == 'TextFrame'){
     			// shapes[i].clear_selection();
         	// }
         	if(current_state.selection_mode == 'type_tool'){
-        		
+
 	            if (shapes[i].contains(mouse_x, mouse_y)) {
-	            	
+
                 	// Only init the editor for actual text objects
                 	if(shapes[i].page_item_type == 'TextFrame'){
-                		
-                		
-                		
+
+
+
 						// // destory the cursor element thats dynamically created regardless
 					    // if(document.getElementById('type_tool_cursor') != null){
 					    	// console.log('(type_tool_cursor).remove()');
-// 				
+//
 				    		// // Remove any existing listeners first
 					    	// this.canvas_state.canvas.removeEventListener("keydown", keydown_handler);
 					    	// document.getElementById(current_state.canvas.id).removeAttribute("tabindex");
-// 					    	
-					    	// document.getElementById('type_tool_cursor').remove();      
-					    	// clearInterval(current_state.cursor_interval_pointer);  
-					    	// current_state.cursor_interval_pointer = null;    
-// 					    	
-					    	// current_state.cursor = null;	
+//
+					    	// document.getElementById('type_tool_cursor').remove();
+					    	// clearInterval(current_state.cursor_interval_pointer);
+					    	// current_state.cursor_interval_pointer = null;
+//
+					    	// current_state.cursor = null;
 					    // }
-                		
-                		
-                		
+
+
+
             			console.log('FSM mousedown type_tool called...');
             			var p_ctx = current_state.getContext(e);
             			shapes[i].type_tool(p_ctx, e);
                 	}
-	            	
+
 	                mySel = shapes[i];
-	                
-	                
+
+
 					// This updates the options so the values of the text field
 							var size_str = '';
 							size_str += '<option value="'+Math.floor(mySel.point_size/4)+'">'+Math.floor(mySel.point_size/4)+'px</option>';
@@ -252,46 +252,46 @@ function CanvasStateMachine(canvas, tub){
 							size_str += '<option value="'+Math.ceil(mySel.point_size*4)+'">'+Math.ceil(mySel.point_size*4)+'px</option>';
 							$("#font_size").html(size_str);
 
-				            
+
 				            var face_str = '';
 							var fonts = ["Minion Pro", "Helvetica", "Times", "Courier", "Verdana", "Tahoma"];
 							for (var i = 0; i < fonts.length; i++) {
-							    
+
 							    if(fonts[i] == mySel.font_style){
 							    	face_str += '<option value="'+fonts[i]+'" selected>'+fonts[i]+'</option>';
 							    }else{
-							    	face_str += '<option value="'+fonts[i]+'">'+fonts[i]+'</option>';	
+							    	face_str += '<option value="'+fonts[i]+'">'+fonts[i]+'</option>';
 							    }
-							    
+
 							}
 				            $("#font_face").html(face_str);
-				            
-				            
+
+
 							var color_str = '';
 							var colors = tub['color_palette'].color_palette.Color;
 							for (var i = 0; i < colors.length; i++) {
 								var fill_colour = colors[i]['@attributes'].ColorValue;
 								fill_colour = fill_colour.split(' ');
-								
+
 								var c,m,y,k;
 								c = fill_colour[0];
 								m = fill_colour[1];
 								y = fill_colour[2];
 								k = fill_colour[3];
-								
+
 								var cc = ColorConverter.toRGB(new CMYK(c, m, y, k));
 								var rgb_colour = 'rgba('+cc.r+','+cc.g+','+cc.b+',1)';
-								
+
 							    if(rgb_colour == mySel.fill_colour){
 							    	color_str += '<option value="'+rgb_colour+'" style="color:'+rgb_colour+';" selected>'+colors[i]['@attributes'].Self+'</option>';
 							    }else{
-							    	color_str += '<option value="'+rgb_colour+'" style="color:'+rgb_colour+';">'+colors[i]['@attributes'].Self+'</option>';	
+							    	color_str += '<option value="'+rgb_colour+'" style="color:'+rgb_colour+';">'+colors[i]['@attributes'].Self+'</option>';
 							    }
 							}
 							$("#font_color").html(color_str);
 
-	                
-	                
+
+
 	                // Keep track of where in the object we clicked
 	                // so we can move it smoothly (see mousemove)
 	                current_state.dragoffx = mouse_x - mySel.x;
@@ -303,8 +303,8 @@ function CanvasStateMachine(canvas, tub){
 	                return;
 	            }
            	}
-           	
-           	
+
+
         }
 
         // havent returned means we have failed to select anything.
@@ -313,7 +313,7 @@ function CanvasStateMachine(canvas, tub){
             current_state.selection = null;
             current_state.valid = false; // Need to clear the old selection border
         }
-       
+
 
 
 
@@ -321,15 +321,16 @@ function CanvasStateMachine(canvas, tub){
 	    // Destory any setup for current tool as nothing is selected
 	    if(current_state.selection_mode == 'type_tool' && Object.prototype.toString.call(document.getElementById('type_tool_cursor')) != '[object Null]'){
 	    	//console.log('CSM mousedown text off');
-	    	
+
 	    	// current_state.canvas.removeEventListener("keydown", keydown_handler);
 	    	// document.getElementById(current_state.canvas.id).removeAttribute("tabindex");
 	    	// document.getElementById('type_tool_cursor').remove();
 	    }
-	
+
 
     }, true); // End mouse down
-    
+
+
     
 
     this.canvas.addEventListener('mousemove', function(e){
@@ -1111,16 +1112,23 @@ CanvasStateMachine.prototype.store_style = function (style_string){
 	if(this.selection != null){
 		this.selection.store_style(style_string)	
 	}
-}
-
-
-
+};
 
 
 CanvasStateMachine.prototype.addShape = function(shape) {
     "use strict";
     this.shapes.push(shape);
     this.valid = false;
+	pageShapes.push(shape);
+
+	//position canvas element at page position
+	if(shape["page_item_type"] == "Page"){
+		fCanvas.setHeight(shape.page_height);
+		fCanvas.setWidth(shape.page_width);
+		$('#fCanvas').parent().css('top','65px');
+		$('#fCanvas').parent().css('left',tub['page_info']['center_offset']+15+'px');
+	}
+
 };
 
 CanvasStateMachine.prototype.clear = function() {
@@ -1154,7 +1162,11 @@ CanvasStateMachine.prototype.draw = function() {
         // draw all shapes
         for (i = 0; i < shapes.length; i += 1) {
             shape = shapes[i];
-            
+
+			//do not draw textFrames, they are drawn in fabricJs
+			if(shape["page_item_type"] == "TextFrame"){
+				continue;
+			}
             // We can skip the drawing of elements that have moved off the screen:
             // REDO this later
             

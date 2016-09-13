@@ -37,7 +37,7 @@ function TextFrame(canvas_state, tub, json_object){
     this.page_item_type = 'TextFrame';
     this.canvas_state = canvas_state;
     this.tub = tub;
-    this.json_object = json_object
+    this.json_object = json_object;
     // pull vals from json_object
     
     this.item_transform = this.json_object['@attributes'].ItemTransform;
@@ -57,6 +57,12 @@ function TextFrame(canvas_state, tub, json_object){
 	this.self_id = this.json_object['@attributes'].Self;
 
 
+	var points = this.json_object.Properties.PathGeometry.GeometryPathType.PathPointArray.PathPointType;
+	this.points_coords = [];
+	for(var i=0; i<points.length; i++){
+		var coords = points[i]["@attributes"]["Anchor"].split(" ");
+		this.points_coords.push(coords);
+	}
     // DEAL WITH PAGES DIFFERENTLY LATER...!
     this.first_x = this.first_y = this.max_x = this.max_y =0;
     this.selection_x = this.selection_y = 0;
@@ -67,8 +73,6 @@ function TextFrame(canvas_state, tub, json_object){
 	this.character_styles = [];
 	this.character_style_map = [];
 	this.characters_selected = []; // The code processes an array
-	
-	
 	
 	// PARSE THE STORY - TEXT INIT
 	
@@ -283,9 +287,27 @@ function TextFrame(canvas_state, tub, json_object){
 		
 		/**************************/
 
-	}	
-	
-	
+	}
+
+	//create fabricJs Itext element
+
+	// GET BOUNDING BOX
+	this.start_x = parseFloat(this.points_coords[0][0]) + parseFloat(this.page_center_x_coord);
+	this.start_y = parseFloat(this.points_coords[0][1]) + parseFloat(this.page_center_y_coord);
+
+	// Apply ItemTransform offset
+	this.start_x = parseFloat(this.start_x) + parseFloat(this.item_transform_x) - parseFloat(this.page_center_x_coord);
+	this.start_y = parseFloat(this.start_y) + parseFloat(this.item_transform_y);
+
+	var text = this.characters.join("");
+	var fShape = (new fabric.IText(text, {
+		fontFamily: 'customFont',
+		left: this.start_x,
+		top: this.start_y
+	}));
+	fabricShapes.push(fShape);
+	//draw fabricJs shapes
+	fCanvas.add(fShape);
 
 
 }

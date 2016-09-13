@@ -17,12 +17,17 @@
     <script src="./page_module.js"></script>
     <script src="./page_items/rectangle_module.js"></script>
     <script src="./page_items/textframe_module.js"></script>
+	<!-- fabricJs -->
+	<script src="lib/js/fabric.min.js"></script>
     <!-- <script src="./page_items/image_module.js"></script> -->
 
 
 
 
     <script type="text/javascript">
+		var tub = {};
+		var pageShapes = [];
+		var fabricShapes = [];
 		function is_object(x) {
 		    return x === Object(x);
 		}
@@ -30,7 +35,8 @@
 
         $(function(){
             "use strict";
-            
+
+
 			// INIT / LOADING
 			//
             var path = "";
@@ -43,7 +49,6 @@
             var preloaded_images = [];
             
 
-            var tub = {};
             // tub['object_names'] = object_names;
             tub['spread_files_src'] = spread_files_src;
             tub['page_info'] = page_info;
@@ -61,7 +66,7 @@
 			//
             $.ajax({
             	type: "GET",
-                url: "http://<?php echo $_SERVER['SERVER_NAME']; ?>/idml_loader/loader.php?images="+idml_folder,
+                url: "http://<?php echo $_SERVER['SERVER_NAME']; ?>/editor-dev/idml_loader/loader.php?images="+idml_folder,
                 context: document.body,
                 async:   false
             }).success(function(data){
@@ -72,7 +77,7 @@
                 
 				$.each(json_data, function(key, value){
 					//onsole.log(key, value);
-					var filename = "http://<?php echo $_SERVER['SERVER_NAME']; ?>/idml_loader/temp/Links/"+value+"";
+					var filename = "http://<?php echo $_SERVER['SERVER_NAME']; ?>/editor-dev/idml_loader/temp/Links/"+value+"";
 
 					var img = new Image();
 					img.onload = function(){
@@ -89,7 +94,7 @@
 			//
             $.ajax({
             	type: "GET",
-                url: "http://<?php echo $_SERVER['SERVER_NAME']; ?>/idml_loader/loader.php?colours="+idml_folder,
+                url: "http://<?php echo $_SERVER['SERVER_NAME']; ?>/editor-dev/idml_loader/loader.php?colours="+idml_folder,
                 context: document.body,
                 async:   false
             }).success(function(data){
@@ -109,7 +114,7 @@
 			//
             $.ajax({
             	type: "GET",
-                url: "http://<?php echo $_SERVER['SERVER_NAME']; ?>/idml_loader/loader.php?spreads="+idml_folder,
+                url: "http://<?php echo $_SERVER['SERVER_NAME']; ?>/editor-dev/idml_loader/loader.php?spreads="+idml_folder,
                 context: document.body,
                 async:   false
             }).success(function(data){
@@ -121,7 +126,7 @@
 			//
             $.ajax({
             	type: "GET",
-                url: "http://<?php echo $_SERVER['SERVER_NAME']; ?>/idml_loader/loader.php?stories="+idml_folder,
+                url: "http://<?php echo $_SERVER['SERVER_NAME']; ?>/editor-dev/idml_loader/loader.php?stories="+idml_folder,
                 context: document.body,
                 async:   false
             }).success(function(data){
@@ -162,7 +167,7 @@
 
             $.ajax({
             	type: "GET",
-                url: "http://<?php echo $_SERVER['SERVER_NAME']; ?>/idml_loader/loader.php?file="+file,
+                url: "http://<?php echo $_SERVER['SERVER_NAME']; ?>/editor-dev/idml_loader/loader.php?file="+file,
                 context: document.body,
                 async:   false
             }).success(function(data){
@@ -179,7 +184,7 @@
 
             $.ajax({
             	type: "GET",
-                url: "http://<?php echo $_SERVER['SERVER_NAME']; ?>/idml_loader/loader.php?file="+file,
+                url: "http://<?php echo $_SERVER['SERVER_NAME']; ?>/editor-dev/idml_loader/loader.php?file="+file,
                 context: document.body,
                 async:   false
             }).success(function(data){
@@ -578,7 +583,7 @@
 		    	color_str += '<option value="rgba('+cc.r+','+cc.g+','+cc.b+',1)">'+colors[i]['@attributes'].Self+'</option>';	
 			}
 			$("#font_color").html(color_str);
-			
+
         });
 
 		var mapping = {
@@ -649,6 +654,11 @@
     </style>
 </head>
 <body>
+<!--temporary canvas for fabricJs text element -->
+<canvas id="fCanvas" style="left:0; top:0; height: 842px; width: 595px; z-index: 999; position: absolute"></canvas>
+<script>
+	var fCanvas = new fabric.Canvas("fCanvas");
+</script>
 	<div class="spread_container" style="display:none;">
 	    <canvas class="ruler_canvas" id="ruler_canvas" width="115" height="115"></canvas>
 	    <canvas class="spread_canvas" id="spread_canvas" width="100" height="100"></canvas>
@@ -660,7 +670,6 @@
 
 
 <canvas id="temp_canvas" style="left:-10000px;"></canvas>
-
 
 
 
